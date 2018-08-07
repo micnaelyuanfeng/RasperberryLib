@@ -97,8 +97,8 @@ bool gpio_clear(BCM2835_device_t* gpio, uint32_t pin_index)
 
 bool gpio_read(BCM2835_device_t* gpio, uin32_t pin_index)
 {
-    bool result    = true;
-    bool pin_value = false;
+    bool     result    = true;
+    uint32_t pin_value = -1;
 
     if(gpio == NULL)
     {
@@ -107,9 +107,17 @@ bool gpio_read(BCM2835_device_t* gpio, uin32_t pin_index)
 
     if(result)
     {
-        *(gpio->device_va + 0x1101) = 1 << pin_index;
+        pin_value = (*(gpio->device_va + 0x1101) &= 1 << pin_index);
+        //pin_value = pin_value >> pin_index;
     }
 
-    return result;
+    if(result)
+    {
+        return pin_value;
+    }
+    else
+    {
+        return result;
+    }
 }
 
