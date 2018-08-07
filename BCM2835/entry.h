@@ -10,6 +10,20 @@
 #define BSC0_BASE                            (BCM2708_MM_P_BASE + 0x804000)
 #define BLOCK_SIZE                           4096
 
+enum device_type
+{
+    DEV_GPIO  = 0x1,
+    DEV_SPI   = 0x2,
+    DEV_I2C   = 0x3,
+    DEV_UART  = 0x4,
+    DEV_TIMER = 0x5
+};
+
+enum debug_status
+{
+    EXE_FAILED  = 0xE,
+    EXE_SUCCESS = 0xF,
+};
 
 typedef struct BCM2835_device
 {
@@ -22,13 +36,19 @@ typedef struct BCM2835_device
 typedef struct BCM2835
 {
     //Add more device
-    void* device_gpio;
-    void* device_i2c;
-    void* device_spi;
+    BCM2835_device_t* device_gpio;
+    BCM2835_device_t* device_i2c;
+    BCM2835_device_t* device_spi;
+    BCM2835_device_t* device_uart;
+    BCM2835_device_t* device_timer;
 }BCM2835_t;
 
-bool bcm2835_device_init(void);
-bool bcm2835_map_device(BCM2835_device_t* this_device);
-bool bcm2835_unmpa_device(BCM2835_device_t* this_device);
+bool bcm2835_device_init(BCM2835_device_t* this_device, enum device_type);
+
+bool gpio_init(BCM2835_device_t* this_device);
+bool i2c_init(BCM2835_device_t* this_device);
+bool spi_init(BCM2835_device_t* this_device);
+bool uart_init(BCM2835_device_t* this_device);
+bool timer_init(BCM2835_device_t* this_device);
 
 #endif 
